@@ -5,42 +5,67 @@ import subprocess
 
 BUILTINS = ["type", "echo", "cd", "pwd", "exit"]
 
-def check_command(user_command):
+def handle_type(*args):
+    if not args:
+        return "type: missing argument"
+    path = shutil.which(*args)
+    if args[0] in BUILTINS:
+        return f"{args[0]} is a shell builtin"
+    elif path is None:
+        return f"{args[0]}: not found"
+    else:
+        return f"{args[0]} is {path}"
+    
+def handle_echo(args):
+    return " ".join(args)
+    
+def handle_cd(args):
+    if len(args) == 0:
+        return "cd: missing argument"
+    try:
+        os.chdir(args[0])
+    except FileNotFoundError:
+        return f"cd: {args[0]}: No such file or directory"
+    except NotADirectoryError:
+        return f"cd: {args[0]}: Not a directory"
+    except PermissionError:
+        return f"cd: {args[0]}: Permission denied"
+    except Exception as e:
+        return f"cd: {args[0]}: {e}"
+    return None
+
+def handle_pwd():
+    return os.getcwd()
+
+def handle_exit():
+    sys.exit()
+    
+def handle_catchall(user_command, command, *args):
+    try:
+        subprocess.run([command, *args], check=True)
+        return None
+    except subprocess.CalledProcessError as e:
+        return f"{user_command}: command failed with error: {e}"
+    except FileNotFoundError:
+        return f"{user_command}: command not found"
+    except Exception as e:
+        return f"{user_command}: an error occurred: {e}"
+
+def handle_command(user_command):
     command, *args = user_command.split(" ")
     match command:
         case "type":
-            path = shutil.which(*args)
-            if args[0] in BUILTINS:
-                return f"{args[0]} is a shell builtin"
-            elif path is None:
-                return f"{args[0]}: not found"
-            else:
-                return f"{args[0]} is {path}"
+            return handle_type(*args)
         case "echo":
-            return " ".join(args)
+            return handle_echo(args)
         case "cd":
-            if len(args) == 0:
-                return "cd: missing argument"
-            try:
-                os.chdir(args[0])
-            except FileNotFoundError:
-                return f"cd: {args[0]}: No such file or directory"
-            except NotADirectoryError:
-                return f"cd: {args[0]}: Not a directory"
-            except PermissionError:
-                return f"cd: {args[0]}: Permission denied"
-            except Exception as e:
-                return f"cd: {args[0]}: {e}"
-            return None
+            return handle_cd(args)
         case "pwd":
-            return os.getcwd()
+            return handle_pwd()
         case "exit":
-            sys.exit()
+            handle_exit()
         case _:
-            if shutil.which(command):
-                subprocess.run([command, *args])
-                return None
-            return f"{user_command}: command not found"
+            return handle_catchall(user_command, command, *args)
     
 
 def main():
@@ -49,7 +74,7 @@ def main():
         sys.stdout.flush()
 
         user_command = input()
-        output = check_command(user_command)
+        output = handle_command(user_command)
         if output is not None:
             sys.stdout.write(f"{output}\n")
     
