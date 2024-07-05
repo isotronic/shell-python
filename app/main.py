@@ -1,11 +1,12 @@
 import sys
 import shutil
+import subprocess
 
 AVAILABLE_COMMANDS = ["type", "echo", "exit"]
 
 def check_command(user_command):
     command = user_command.split(" ", 1)[0]
-    argument = user_command.split(" ", 1)[1] if " " in user_command else None
+    argument = user_command.split(" ", 1)[1] if " " in user_command else ""
     match command:
         case "type":
             path = shutil.which(argument)
@@ -20,6 +21,9 @@ def check_command(user_command):
         case "exit":
             sys.exit()
         case _:
+            if shutil.which(command):
+                subprocess.run([command])
+                return
             return f"{user_command}: command not found"
     
 
@@ -30,7 +34,8 @@ def main():
 
         user_command = input()
         output = check_command(user_command)
-        sys.stdout.write(f"{output}\n")
+        if output is not None:
+            sys.stdout.write(f"{output}\n")
     
 
 if __name__ == "__main__":
