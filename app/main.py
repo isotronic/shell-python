@@ -1,16 +1,20 @@
 import sys
+import shutil
 
-available_command = ["type", "echo", "exit"]
+AVAILABLE_COMMANDS = ["type", "echo", "exit"]
 
 def check_command(user_command):
     command = user_command.split(" ", 1)[0]
     argument = user_command.split(" ", 1)[1] if " " in user_command else None
     match command:
         case "type":
-            if argument in available_command:
+            path = shutil.which(argument)
+            if argument in AVAILABLE_COMMANDS:
                 return f"{argument} is a shell builtin"
-            else:
+            elif path is None:
                 return f"{argument}: not found"
+            else:
+                return f"{argument} is {path}"
         case "echo":
             return argument
         case "exit":
