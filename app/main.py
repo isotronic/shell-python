@@ -1,9 +1,15 @@
 import sys
 
 def check_command(user_command):
-    match user_command:
-        case s if s.startswith("exit"):
-            exit()
+    command = user_command.split(" ", 1)[0]
+    argument = user_command.split(" ", 1)[1] if " " in user_command else None
+    match command:
+        case "exit":
+            exit_message = "Exiting with code " if argument else "Exiting"
+            sys.stdout.write(exit_message)
+            sys.exit(argument)
+        case "echo":
+            return argument
         case _:
             return f"{user_command}: command not found"
     
