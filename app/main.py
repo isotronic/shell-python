@@ -17,7 +17,7 @@ def handle_type(*args):
     else:
         return f"{args[0]} is {path}"
     
-def handle_echo(args):
+def handle_echo(*args):
     """Handles the 'echo' command to print arguments to stdout."""
     return " ".join(args)
     
