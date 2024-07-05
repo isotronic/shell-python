@@ -21,9 +21,9 @@ def handle_echo(args):
     """Handles the 'echo' command to print arguments to stdout."""
     return " ".join(args)
     
-def handle_cd(args):
+def handle_cd(*args):
     """Handles the 'cd' command to change the current working directory."""
-    if len(args) == 0:
+    if len(*args) == 0:
         return "cd: missing argument"
     try:
         # Expand '~' to the user home directory
