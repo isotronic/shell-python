@@ -1,15 +1,16 @@
+import os
 import sys
 import shutil
 import subprocess
 
-AVAILABLE_COMMANDS = ["type", "echo", "exit"]
+BUILTINS = ["type", "echo", "pwd", "exit"]
 
 def check_command(user_command):
     command, *args = user_command.split(" ")
     match command:
         case "type":
             path = shutil.which(*args)
-            if args[0] in AVAILABLE_COMMANDS:
+            if args[0] in BUILTINS:
                 return f"{args[0]} is a shell builtin"
             elif path is None:
                 return f"{args[0]}: not found"
@@ -17,6 +18,8 @@ def check_command(user_command):
                 return f"{args[0]} is {path}"
         case "echo":
             return " ".join(args)
+        case "pwd":
+            return os.getcwd()
         case "exit":
             sys.exit()
         case _:
