@@ -5,27 +5,23 @@ import subprocess
 AVAILABLE_COMMANDS = ["type", "echo", "exit"]
 
 def check_command(user_command):
-    command = user_command.split(" ", 1)[0]
-    argument = user_command.split(" ", 1)[1] if " " in user_command else None
+    command, *args = user_command.split(" ")
     match command:
         case "type":
-            path = shutil.which(argument)
-            if argument in AVAILABLE_COMMANDS:
-                return f"{argument} is a shell builtin"
+            path = shutil.which(*args)
+            if args[0] in AVAILABLE_COMMANDS:
+                return f"{args[0]} is a shell builtin"
             elif path is None:
-                return f"{argument}: not found"
+                return f"{args[0]}: not found"
             else:
-                return f"{argument} is {path}"
+                return f"{args[0]} is {path}"
         case "echo":
-            return argument
+            return " ".join(args)
         case "exit":
             sys.exit()
         case _:
             if shutil.which(command):
-                if argument is not None:
-                    subprocess.run([command, argument])
-                else:
-                    subprocess.run([command])
+                subprocess.run([command, *args])
                 return
             return f"{user_command}: command not found"
     
