@@ -41,7 +41,16 @@ def handle_pwd(*args):
 
 def handle_exit(*args):
     """Handles the 'exit' command to exit the shell."""
-    sys.exit("Exiting...")
+    if args:
+        try:
+            exit_code = int(args[0])
+            sys.stdout.write("Exiting...")
+            sys.exit(exit_code)
+        except ValueError:
+            sys.stdout.write("Invalid exit code, must be an integer. Exiting with exit code 1...")
+            sys.exit(1)
+    sys.stdout.write("Exiting...")
+    sys.exit(0)
     
 def handle_catchall(user_command, command, *args):
     """Handles external commands by attempting to execute them."""
