@@ -5,9 +5,7 @@ def check_command(user_command):
     argument = user_command.split(" ", 1)[1] if " " in user_command else None
     match command:
         case "exit":
-            exit_message = "Exiting with code " if argument else "Exiting"
-            sys.stdout.write(exit_message)
-            sys.exit(argument)
+            sys.exit()
         case "echo":
             return argument
         case _:
