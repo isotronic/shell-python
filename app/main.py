@@ -6,7 +6,7 @@ AVAILABLE_COMMANDS = ["type", "echo", "exit"]
 
 def check_command(user_command):
     command = user_command.split(" ", 1)[0]
-    argument = user_command.split(" ", 1)[1] if " " in user_command else ""
+    argument = user_command.split(" ", 1)[1] if " " in user_command else None
     match command:
         case "type":
             path = shutil.which(argument)
@@ -22,7 +22,10 @@ def check_command(user_command):
             sys.exit()
         case _:
             if shutil.which(command):
-                subprocess.run([command])
+                if argument is not None:
+                    subprocess.run([command, argument])
+                else:
+                    subprocess.run([command])
                 return
             return f"{user_command}: command not found"
     
