@@ -35,11 +35,11 @@ def handle_cd(*args):
         return f"cd: {args[0]}: {e}"
     return None
 
-def handle_pwd():
+def handle_pwd(*args):
     """Handles the 'pwd' command to return the current working directory."""
     return os.getcwd()
 
-def handle_exit():
+def handle_exit(*args):
     """Handles the 'exit' command to exit the shell."""
     sys.exit("Exiting...")
     
