@@ -2,7 +2,7 @@
 
 This is my implementation of the ["Build Your Own Shell" Challenge](https://app.codecrafters.io/courses/shell/overview).
 
-I built a simple POSIX compliant shell that can interpret shell commands, run external programs and has some building commands like cd, pwd, echo and type.
+I built a simple POSIX-compliant shell that can interpret shell commands, run external programs and has some builtin commands like cd, pwd, echo and type.
 
 **Note**: Head over to
 [codecrafters.io](https://codecrafters.io) to try the challenge yourself.
